@@ -19,7 +19,7 @@ namespace AspNetCoreShiftLeft.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAppInsights(Configuration);
+            services.AddApplicationInsightsTelemetry(Configuration);
             services.AddRazorPages();
         }
 
@@ -48,19 +48,6 @@ namespace AspNetCoreShiftLeft.Web
             {
                 endpoints.MapRazorPages();
             });
-        }
-    }
-    static class ServiceCollectionExtensions
-    {
-        public static IServiceCollection AddAppInsights(this IServiceCollection services, IConfiguration configuration)
-        {
-            ApplicationInsightsServiceOptions aiOptions = new ApplicationInsightsServiceOptions();
-            aiOptions.EnableAdaptiveSampling = true;
-
-            // QuickPulse (Live Metrics stream).
-            aiOptions.EnableQuickPulseMetricStream = true;
-            services.AddApplicationInsightsTelemetry(aiOptions);
-            return services;
         }
     }
 }
