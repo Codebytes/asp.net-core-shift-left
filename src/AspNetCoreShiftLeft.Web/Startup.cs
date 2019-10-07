@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +19,7 @@ namespace AspNetCoreShiftLeft.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAppInsights(Configuration);
             services.AddRazorPages();
         }
 
@@ -51,6 +48,19 @@ namespace AspNetCoreShiftLeft.Web
             {
                 endpoints.MapRazorPages();
             });
+        }
+    }
+    static class ServiceCollectionExtensions
+    {
+        public static IServiceCollection AddAppInsights(this IServiceCollection services, IConfiguration configuration)
+        {
+            ApplicationInsightsServiceOptions aiOptions = new ApplicationInsightsServiceOptions();
+            aiOptions.EnableAdaptiveSampling = true;
+
+            // QuickPulse (Live Metrics stream).
+            aiOptions.EnableQuickPulseMetricStream = true;
+            services.AddApplicationInsightsTelemetry(aiOptions);
+            return services;
         }
     }
 }
